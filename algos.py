@@ -14,9 +14,9 @@ class MRV:
 
         for i in range(grid.get_width()):
             for j in range(grid.get_width()):
-                if cells[i][j] < min_count:
+                if len(cells[i][j]) < min_count and len(cells[i][j]) > 1:
                     min_idx = (i, j)
-                    min_count = cells[i][j]
+                    min_count = len(cells[i][j])
         
         return min_idx
 
@@ -41,11 +41,10 @@ class Backtracking:
                 copy.get_cells()[i][j] = dom
 
             
-                if not AC3().enforce(copy, {(i, j)}):
-                    continue
+                if (not AC3().enforce(copy, {(i, j)})): continue
 
                 res = self.search(copy, mrv)
-                if res: return res
+                if res is not False: return res
         
         return False
 
@@ -166,7 +165,10 @@ class AC3:
             if row_fail or col_fail or ss_fail: 
                 return False
             
-            Q |= row_assigned | col_assigned | ss_assigned
+            # Q |= row_assigned | col_assigned | ss_assigned
+            Q = Q.union(row_assigned)
+            Q = Q.union(col_assigned)
+            Q = Q.union(ss_assigned)
 
         return True
 
