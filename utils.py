@@ -43,8 +43,38 @@ class Grid:
         return self.domain
     
 
-    def read(self):
-        pass
+    def read(self, sudoku: str):
+        '''
+        Read sudoku string and build cells.
+        '.' represents empty cell
+
+        Each resulting cell contains initial possible values
+        '''
+        i = 0
+        row = []
+        for c in sudoku:
+            if c == '.':
+                row.append(self.domain)
+            else:
+                row.append(c)
+            
+            i += 1
+            if i % self.width:
+                self.cells.append(row)
+                row = []
+    
     
 
+
+class SudokuGenerator:
+    '''
+    Sudoku generator
+    '''
+    def __init__(self, domain='123456789', w=9):
+        self.d = domain
+        self.w = w
+
+
+    def generate(self):
+        pass
     
