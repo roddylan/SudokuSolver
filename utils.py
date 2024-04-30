@@ -16,6 +16,7 @@ class Grid:
         self.domain = domain
         self.width = w
         self.n_sect = int(np.sqrt(self.width))
+        self.w_sec = self.width // self.n_sect
 
 
     def copy(self):
@@ -127,7 +128,8 @@ class Grid:
             
 
         # subsection constraint
-        w_sec = self.width // self.n_sect
+        # w_sec = self.width // self.n_sect
+        w_sec = self.w_sec
 
         row_init = (row // self.n_sect) * w_sec
         col_init = (col // self.n_sect) * w_sec
