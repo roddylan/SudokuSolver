@@ -1,4 +1,5 @@
 import numpy as np
+from dokusan import generators
 
 class Grid:
     '''
@@ -54,7 +55,7 @@ class Grid:
 
         Each resulting cell contains initial possible values
         '''
-        
+        self.cells = []
         i = 0
         row = []
         for c in sudoku:
@@ -159,12 +160,30 @@ class Grid:
 class SudokuGenerator:
     '''
     Sudoku generator
+    TODO: implement own generator
     '''
     def __init__(self, domain='123456789', w=9):
         self.d = domain
         self.w = w
+        self.puzzle = []
+        self.str = ""
+
+
+    def is_valid(self):
+        # row
+        for i in range(self.w):
+            row = []
+            for j in range(self.w):
+                if self.puzzle[i][j] != ".":
+                    row.append(self.puzzle[i][j])
+            
+            if len(row) != len(set(row)): return False
+
+                
 
 
     def generate(self):
-        pass
+        self.str = str(generators.random_sudoku(avg_rank=150)).replace('0','.')
+        return self.str
+        # pass
     
