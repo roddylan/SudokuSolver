@@ -127,7 +127,19 @@ class Grid:
             
 
         # subsection constraint
+        w_sec = self.width // self.n_sect
+
+        row_init = (row // self.n_sect) * w_sec
+        col_init = (col // self.n_sect) * w_sec
+
         
+        for i in range(row_init, row_init + w_sec):
+            for j in range(col_init, col_init + w_sec):
+                if i == row and j == col: continue
+                if self.cells[i][j] == val:
+                    return False
+        
+        return True
 
 
     def is_solved(self):
