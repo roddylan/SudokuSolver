@@ -26,12 +26,28 @@ class Backtracking:
     '''
     Backtracking search for CSP
     '''
-    def search(self, grid, ):
+    def search(self, grid: Grid, mrv: MRV):
         '''
         Backtrack search implementation
         '''
-        pass
+        if grid.is_solved():
+            return grid
+        
+        i, j = mrv.select(grid)
 
+        for dom in grid.get_cells()[i][j]:
+            if grid.is_val_consistent(dom, i, j):
+                copy = grid.copy()
+                copy.get_cells()[i][j] = dom
+
+            
+                if not AC3().enforce(copy, {(i, j)}):
+                    continue
+
+                res = self.search(copy, mrv)
+                if res: return res
+        
+        return False
 
 class AC3:
     '''
@@ -61,9 +77,6 @@ class AC3:
             cells[row][i] = new_domain
         
         return assigned, False
-
-
-            
 
 
     def remove_domain_col(self, grid: Grid, row, col):
@@ -122,16 +135,41 @@ class AC3:
         
         return assigned, False
 
-    def enforce_init(self):
+    def enforce_init(self, grid: Grid):
         '''
         Enforce arc consistency for initial grid (since empty cells are given full domain)
         '''
-        pass
+        
+        # initialize set
+        Q = set()
+        w = grid.get_width()
+        cells = grid.get_cells()
 
-    def enforce(self):
+        for i in range(w):
+            for j in range(w):
+                if len(cells[i][j]) == 1:
+                    Q.add((i,j))
+
+        return self.enforce(grid=grid, Q=Q)
+
+    def enforce(self, grid: Grid, Q: set):
         '''
-        Enforce arc consistency for other grids
+        Enforce arc consistency
         '''
-        pass
+        while len(Q) != 0:
+            row, col = Q.pop()
+
+            row_assigned, row_fail = self.remove_domain_row(grid, row, col)
+            col_assigned, col_fail = self.remove_domain_col(grid, row, col)
+            ss_assigned, ss_fail = self.remove_domain_ss(grid, row, col)
+
+            if row_fail or col_fail or ss_fail: 
+                return False
+            
+            Q |= row_assigned | col_assigned | ss_assigned
+
+        return True
+
+            
 
     
