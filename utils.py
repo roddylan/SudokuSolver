@@ -1,3 +1,5 @@
+import numpy as np
+
 class Grid:
     '''
     Grid object.
@@ -13,6 +15,7 @@ class Grid:
         self.cells = cells
         self.domain = domain
         self.width = w
+        self.n_sect = int(np.sqrt(self.width))
 
 
     def copy(self):
@@ -63,8 +66,80 @@ class Grid:
                 self.cells.append(row)
                 row = []
     
-    
+    def print(self):
+        '''
+        Print board representation
+        '''
 
+        # n_sect = int(np.sqrt(self.width))
+        n_border = self.n_sect + 1
+
+        for _ in range(self.width + n_border):
+            print("-", end=" ")
+        print()
+
+        for i in range(self.width):
+            # row
+            print("|", end=" ")
+            
+            for j in range(self.width):
+                # col
+                if len(self.cells[i][j]) == 1:
+                    print(self.cells[i][j], end=" ")
+                elif len(self.cells[i][j]) > 1:
+                    print(".", end=" ")
+                else:
+                    print(";", end=" ")
+                
+                if (j+1) % self.n_sect == 0:
+                    print("|", end=" ")
+            print()
+
+            if (i+1) % self.n_sect == 0:
+                for _ in range(self.width + n_border):
+                    print("-", end=" ")
+                print()
+
+        print()
+
+    def print_possible(self):
+        for row in self.cells:
+            print(row)
+
+
+
+    def is_val_consistent(self, val, row, col):
+        '''
+        True if value is arc consistent
+        '''
+
+        # row constraint
+        for i in range(self.width):
+            if i == col: continue
+            if self.cells[row][i] == val:
+                return False
+        
+        # column constraint
+        for i in range(self.width):
+            if i == row: continue
+            if self.cells[i][col] == val:
+                return False
+            
+
+        # subsection constraint
+        
+
+
+    def is_solved(self):
+        '''
+        Return True if solved; False otherwise
+        '''
+        for i in range(self.width):
+            for j in range(self.width):
+                if len(self.cells[i][j]) > 1 or not self.is_val_consistent(self.cells[i][j], i, j):
+                    return False
+                
+        return True
 
 class SudokuGenerator:
     '''
